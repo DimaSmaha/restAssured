@@ -12,15 +12,16 @@ import static org.hamcrest.Matchers.*;
 
 public class usersEndpoint {
 // use https only because u will get redirect at CUD methods
-String baseUri = "https://reqres.in/";
+String baseUri = "https://reqres.in";
+String basePath = "/api/users";
 
     @Test
     public void getListOfUsers(){
         given()
                 .baseUri(baseUri)
-                .basePath("api/users?page=2")
+                .basePath(basePath+"?page=2")
         .when()
-                .get(baseUri+"api/users?page=2")
+                .get(baseUri+basePath+"?page=2")
         .then()
                 .statusCode(200)
                 .body("per_page",equalTo(6))
@@ -31,9 +32,9 @@ String baseUri = "https://reqres.in/";
     public void getSingleUser(){
         given()
                 .baseUri(baseUri)
-                .basePath("api/users/2")
+                .basePath(basePath+"/2")
         .when()
-                .get(baseUri+"api/users/2")
+                .get(baseUri+basePath+"/2")
         .then()
                 .statusCode(200)
                 .body("data.first_name",equalTo("Janet"))
@@ -45,9 +46,9 @@ String baseUri = "https://reqres.in/";
     public void getSingleUserNotFound(){
         given()
                 .baseUri(baseUri)
-                .basePath("api/users/23")
+                .basePath(basePath+"/23")
         .when()
-                .get(baseUri+"api/users/23")
+                .get(baseUri+basePath+"/23")
         .then()
                 .statusCode(404)
                 .body(equalTo("{}"))
@@ -63,15 +64,16 @@ String baseUri = "https://reqres.in/";
 
         given()
                 .baseUri(baseUri)
-                .basePath("api/users")
+                .basePath(basePath)
                 .header("Content-type", "application/json")
                 .body(requestBody)
         .when()
-                .post(baseUri+"api/users")
+                .post(baseUri+basePath)
         .then()
                 .statusCode(201)
                 .body("name",equalTo("Dima"))
                 .body("$", hasKey("id"))
+                .body("$", hasKey("createdAt"))
                 .log().all();
     }
 
@@ -84,12 +86,33 @@ String baseUri = "https://reqres.in/";
 
         given()
                 .baseUri(baseUri)
-                .basePath("api/users/2")
+                .basePath(basePath+"/2")
                 .header("Content-type", "application/json")
                 .body(requestBody)
         .when()
-                .put(baseUri+"api/users/2")
+                .put(baseUri+basePath+"/2")
         .then()
+                .statusCode(200)
+                .body("name",equalTo("Dima"))
+                .body("$", hasKey("updatedAt"))
+                .log().all();
+    }
+
+    @Test
+    public void updateSingleUserByPatch(){
+        // use json to java string online
+        // for bodys use chain with .when()
+
+        String requestBody = "{\"name\":\"Dima\",\"job\":\"QA\"}";
+
+        given()
+                .baseUri(baseUri)
+                .basePath(basePath+"/2")
+                .header("Content-type", "application/json")
+                .body(requestBody)
+                .when()
+                .patch(baseUri+basePath+"/2")
+                .then()
                 .statusCode(200)
                 .body("name",equalTo("Dima"))
                 .body("$", hasKey("updatedAt"))
@@ -100,10 +123,10 @@ String baseUri = "https://reqres.in/";
     public void deleteSingleUser(){
         given()
                 .baseUri(baseUri)
-                .basePath("api/users/2")
+                .basePath(basePath+"/2")
                 .header("Content-type", "application/json")
         .when()
-                .delete("api/users/2")
+                .delete(basePath+"/2")
         .then()
                 .statusCode(204)
                 .log().all();
