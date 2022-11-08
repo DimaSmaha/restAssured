@@ -18,8 +18,8 @@ String baseUri = "https://reqres.in/";
     public void getListOfUsers(){
         given()
                 .baseUri(baseUri)
-                .basePath("api/users?page=2");
-        when()
+                .basePath("api/users?page=2")
+        .when()
                 .get(baseUri+"api/users?page=2")
         .then()
                 .statusCode(200)
@@ -31,8 +31,8 @@ String baseUri = "https://reqres.in/";
     public void getSingleUser(){
         given()
                 .baseUri(baseUri)
-                .basePath("api/users/2");
-        when()
+                .basePath("api/users/2")
+        .when()
                 .get(baseUri+"api/users/2")
         .then()
                 .statusCode(200)
@@ -45,8 +45,8 @@ String baseUri = "https://reqres.in/";
     public void getSingleUserNotFound(){
         given()
                 .baseUri(baseUri)
-                .basePath("api/users/23");
-        when()
+                .basePath("api/users/23")
+        .when()
                 .get(baseUri+"api/users/23")
         .then()
                 .statusCode(404)
